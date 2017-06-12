@@ -1,10 +1,11 @@
 sudo: required
-services:
-- docker
-language: bash
+services: docker
+language: generic
 jobs:
   include:
     - stage: build docker images
+      env:
+        - VTAG=$(grep "ENV VERSION" Dockerfile | awk 'NF>1{print $NF}')
       script:
       # x86 build
       - docker build -t sdelrio/claymore-exporter -f Dockerfile .
