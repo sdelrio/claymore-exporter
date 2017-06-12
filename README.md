@@ -1,3 +1,5 @@
+![](https://travis-ci.org/sdelrio/claymore-exporter.svg?branch=master)
+
 # Claymore prometheus exporter
 
 The script will get values from the IP where Claymore is running and export on port default 8601 for prometheus metrics.
