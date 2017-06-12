@@ -3,20 +3,29 @@ services:
 - docker
 language: bash
 script:
-# prepare qemu
+# x86 build
+- docker build -t sdelrio/claymore-exporter -f Dockerfile .
+# test image
+- docker run --rm -ti --entrypoint python sdelrio/claymore-exporter --version
+- docker run --rm -ti --entrypoint python sdelrio/claymore-exporter /usr/local/bin/claymore-exporter.py -h
+# prepare qemu for arm build
 - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-# build image
+# build arm image
 - docker build -t sdelrio/claymore-exporter-arm -f Dockerfile.arm .
 # test image
 - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm --version
 - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm /usr/local/bin/claymore-exporter.py -h
-# push image
+# push images
 - >
   if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
-    TAG=$(grep "ENV VERSION" Dockerfile.arm | awk 'NF>1{print $NF}')
-    docker tag sdelrio/claymore-exporter-arm sdelrio/claymore-exporter-arm:$TAG
-    docker push sdelrio/claymore-exporter-arm:$TAG
+    TAGX86=$(grep "ENV VERSION" Dockerfile | awk 'NF>1{print $NF}')
+    docker tag sdelrio/claymore-exporter sdelrio/claymore-exporter:$TAGX86
+    docker push sdelrio/claymore-exporter:$TAGX86
+    docker push sdelrio/claymore-exporter
+    TAGARM=$(grep "ENV VERSION" Dockerfile.arm | awk 'NF>1{print $NF}')
+    docker tag sdelrio/claymore-exporter-arm sdelrio/claymore-exporter-arm:$TAGARM
+    docker push sdelrio/claymore-exporter-arm:$TAGARM
     docker push sdelrio/claymore-exporter-arm
   fi
 
