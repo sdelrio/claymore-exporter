@@ -12,18 +12,6 @@ jobs:
       - docker run --rm --privileged multiarch/qemu-user-static:register --reset
       # build arm image
       - docker build -t sdelrio/claymore-exporter-arm -f Dockerfile.arm .
-    - stage: test
-      script:
-      # test x86 image
-      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter --version
-      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter /usr/local/bin/claymore-exporter.py -h
-      # test arm image
-      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm --version
-      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm /usr/local/bin/claymore-exporter.py -h
-    - stage: push images
-      script:
-      # test x86 image
-      # push images
       - >
         if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
           docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
@@ -36,4 +24,12 @@ jobs:
           docker push sdelrio/claymore-exporter-arm:$TAGARM
           docker push sdelrio/claymore-exporter-arm
         fi
+    - stage: test
+      script:
+      # test x86 image
+      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter --version
+      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter /usr/local/bin/claymore-exporter.py -h
+      # test arm image
+      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm --version
+      - docker run --rm -ti --entrypoint python sdelrio/claymore-exporter-arm /usr/local/bin/claymore-exporter.py -h
 
