@@ -134,10 +134,8 @@ if __name__ == "__main__":
         tf = data['result'][6].split(';')
         id = 0
         for i in range (0,len(tf)/2):
-            received_data['gpu'][id]['temp'] = tf[i]
-            received_data['gpu'][id]['fan']  = tf[i+1]
-            received_data['gpu'][id]['temp'] = tf[i]
-            received_data['gpu'][id]['fan']  = tf[i+1]
+            received_data['gpu'][id]['temp'] = tf[i*2]
+            received_data['gpu'][id]['fan']  = tf[(i*2)+1]
             id+=1
 
         print received_data
