@@ -52,16 +52,21 @@ REQUEST_COIN2_REJECT = Counter('claymore_coin2_shares_reject','Claymore coin2 sh
 def netcat(hostname, port, content):
     """ Netcat equivalent to get data from Claymore. Normal http get doesn't works."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((hostname, port))
-    s.sendall(content)
-    s.shutdown(socket.SHUT_WR)
-    fulltext = ''
-    while 1:
-        data = s.recv(1024)
-        if data == "":
-            break
-        fulltext += data
-    s.close()
+#    s.settimeout(3)
+    try:
+        s.connect((hostname, port))
+        s.sendall(content)
+        s.shutdown(socket.SHUT_WR)
+        fulltext = ''
+        while 1:
+            data = s.recv(1024)
+            if data == "":
+                break
+            fulltext += data
+    except socket.error:
+        fulltext='{"error": true, "id": 0, "result": ["No client", "6", "0;0;0", "0;0", "0;0;0", "0;0", "0;0;0;0", "-;--", "0;0;0;0"]}'
+    finally:
+        s.close()
     return parse_response(fulltext)
 
 
@@ -132,6 +137,11 @@ if __name__ == "__main__":
             id+=1
 
         tf = data['result'][6].split(';')
+
+        for i in range (0,len(received_data['gpu'])):
+            received_data['gpu'][i]['temp'] = 0
+            received_data['gpu'][i]['fan']  = 0
+
         id = 0
         for i in range (0,len(tf)/2):
             received_data['gpu'][id]['temp'] = tf[i*2]
