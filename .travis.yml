@@ -1,6 +1,12 @@
 sudo: required
 services: docker
 language: generic
+notifications:
+  slack:
+    rooms:
+      - $SLACK_CHANNEL:$SLACK_TOKEN
+    on_success: always
+    on_failure: always
 jobs:
   include:
     - stage: build docker images
