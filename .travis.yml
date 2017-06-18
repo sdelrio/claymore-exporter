@@ -4,7 +4,7 @@ language: generic
 notifications:
   slack:
     rooms:
-      - $SLACK_CHANNEL:$SLACK_TOKEN
+      - $SLACK_CHANNEL:$SLACK_TOKEN#development
     on_success: always
     on_failure: always
 jobs:
