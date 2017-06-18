@@ -3,8 +3,7 @@ services: docker
 language: generic
 notifications:
   slack:
-    rooms:
-      - $SLACK_TOKEN
+    secure: drHM+FdysSdd5sqrOdndMwC+l4SLijEoxMrsgLjFMGlfaxC3OA0LkAsUlMOuy12ilZv2k3KTwU4vfxFaIeVatdYIHdBUQ1cQKkDVXOIPhmPIx5fnHv9puYl5GVPhNUNwCxq6DCBhgG++CWUxfNi60y3k8lnb3JQv1BmtFTu5OKaTCwuLW3+d6AlTN/qRPxJS2IJCLujIgVLyy53XfrdzSoMOOqniWn6f6caaEmQ7lEr4SpExmt0tfiLZu1Dso4+3ALAkVckDivW/pOF1TzOd5wG1XruTXyhXyzJdpBdSDJaSP7/ZgaZcSlfbTC/S51NgIaUCGBX1stnfzTN0i7+YjhlsEFS798RAPc10WyP0aNsXUixbdiiQT2BKoeNyA8ZjiiIl92u5oolRSJMjU5lUAvvb1L94jtDOGqbJmsPOZBwKYMOKw9Twu9jZUwZaskjPDTnerkl/5rgH0GPb1pAu/lf3d1Gos2NOFqGQ+tnUh4lJP/6jWAc+tDdTVFLe4JjfneTs+OxPovC8b3PUDn7UZg37kjBb23fvPlnd6ZwpESHcZB8vsxiuJ+7xFs2qJMRDXi/xtGrqwqeZa41zcMJzDQ+bHWb/FCxealNlWvZ33yS3nxGhWvRacYzKEGxcnTTR0ha7zdlwlLCh98AuX/cEHlWbKgcPP+cihSC5CSlsjfg=
     on_success: always
     on_failure: always
 jobs:
