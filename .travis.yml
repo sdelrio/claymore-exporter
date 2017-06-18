@@ -2,7 +2,11 @@ sudo: required
 services: docker
 language: generic
 notifications:
-  slack: '$SLACK_ACCOUNT:$SLACK_TOKEN'
+  slack:
+    rooms:
+      - $SLACK_TOKEN
+    on_success: always
+    on_failure: always
 jobs:
   include:
     - stage: build docker images
