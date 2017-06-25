@@ -8,7 +8,7 @@ import collections
 import json
 import socket
 
-version = 0.30
+version = 0.4
 
 # Check if IP is valid
 def validIP(ip):
