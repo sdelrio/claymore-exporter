@@ -63,8 +63,12 @@ def netcat(hostname, port, content):
             if data == "":
                 break
             fulltext += data
-    except socket.error:
+    except socket.error, e:
         fulltext='{"error": true, "id": 0, "result": ["No client", "6", "0;0;0", "0;0", "0;0;0", "0;0", "0;0;0;0", "-;--", "0;0;0;0"]}'
+        print "Socket error: ", e
+    except IOError, e:
+        fulltext='{"error": true, "id": 0, "result": ["No client", "6", "0;0;0", "0;0", "0;0;0", "0;0", "0;0;0;0", "-;--", "0;0;0;0"]}'
+        print "IOError: error: ", e
     finally:
         s.close()
     return parse_response(fulltext)
@@ -101,9 +105,11 @@ if __name__ == "__main__":
         received_data['coin1']['shares'] = total_coin_array[1]
         received_data['coin1']['reject'] = total_coin_array[2]
 
+        if ( int(received_data['coin1']['shares']) > last_share1 ):
+            REQUEST_COIN1_SHARES.inc( int(received_data['coin1']['shares']) - last_share1 )
 
-        REQUEST_COIN1_SHARES.inc( int(received_data['coin1']['shares']) - last_share1 )
-        REQUEST_COIN1_REJECT.inc( int(received_data['coin1']['reject']) - last_reject1 )
+        if ( int(received_data['coin1']['reject']) > last_reject1 ):
+            REQUEST_COIN1_REJECT.inc( int(received_data['coin1']['reject']) - last_reject1 )
 
 
         total_coin_array = data['result'][4].split(';')
@@ -122,8 +128,11 @@ if __name__ == "__main__":
         received_data['coin2']['shares'] = total_coin_array[1]
         received_data['coin2']['reject'] = total_coin_array[2]
 
-        REQUEST_COIN2_SHARES.inc( int(received_data['coin2']['shares']) - last_share2 )
-        REQUEST_COIN2_REJECT.inc( int(received_data['coin2']['reject']) - last_reject2 )
+        if ( int(received_data['coin2']['shares']) > last_share2 ):
+            REQUEST_COIN2_SHARES.inc( int(received_data['coin2']['shares']) - last_share2 )
+
+        if ( int(received_data['coin2']['reject']) > last_reject2 ):
+            REQUEST_COIN2_REJECT.inc( int(received_data['coin2']['reject']) - last_reject2 )
 
         id = 0
         for i in data['result'][3].split(';'):
