@@ -7,7 +7,7 @@ RUN pip install prometheus_client
 ENV LISTENPORT 8601
 ENV IP 192.168.1.34
 ENV FREQUENCY 1
-ENV VERSION 0.4
+ENV VERSION 0.42
 
 ADD claymore-exporter.py .
 ADD entrypoint.sh .
