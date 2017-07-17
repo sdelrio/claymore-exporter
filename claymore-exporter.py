@@ -8,7 +8,7 @@ import collections
 import json
 import socket
 
-version = 0.4
+version = 0.42
 
 # Check if IP is valid
 def validIP(ip):
@@ -137,12 +137,18 @@ if __name__ == "__main__":
         id = 0
         for i in data['result'][3].split(';'):
             received_data['gpu'][id] = {}
-            received_data['gpu'][id]['hashrate1'] = i
+            if (i == "off" ):
+                received_data['gpu'][id]['hashrate1'] = 0
+            else:
+                received_data['gpu'][id]['hashrate1'] = i
             id+=1
 
         id = 0
         for i in data['result'][5].split(';'):
-            received_data['gpu'][id]['hashrate2'] = i
+            if (i == "off" ):
+                received_data['gpu'][id]['hashrate2'] = 0
+            else:
+                received_data['gpu'][id]['hashrate2'] = i
             id+=1
 
         tf = data['result'][6].split(';')
