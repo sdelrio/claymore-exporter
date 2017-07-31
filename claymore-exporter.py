@@ -38,7 +38,7 @@ REQUEST_GPU_TEMP  = Gauge('claymore_gpu_temp','Claymore GPU temp', ['gpu_id'])
 REQUEST_GPU_FAN  = Gauge('claymore_gpu_fan','Claymore GPU fan', ['gpu_id'])
 REQUEST_GPU_HR1  = Gauge('claymore_gpu_hashrate_1','Claymore GPU hashrate1', ['gpu_id'])
 REQUEST_GPU_HR2  = Gauge('claymore_gpu_hashrate_2','Claymore GPU hashrate2', ['gpu_id'])
-#REQUEST_POOL = Gauge('claymore_pool','Claymore Pool info', ['name'])
+
 REQUEST_COIN1_SHARES = Counter('claymore_coin1_shares','Claymore coin1 share')
 REQUEST_COIN1_REJECT = Counter('claymore_coin1_shares_reject','Claymore coin1 share reject')
 REQUEST_COIN2_SHARES = Counter('claymore_coin2_shares','Claymore coin2 share')
@@ -53,7 +53,7 @@ REQUEST_COIN2_REJECT = Counter('claymore_coin2_shares_reject','Claymore coin2 sh
 def netcat(hostname, port, content):
     """ Netcat equivalent to get data from Claymore. Normal http get doesn't works."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#    s.settimeout(3)
+
     try:
         s.connect((hostname, port))
         s.sendall(content)
@@ -173,4 +173,4 @@ if __name__ == "__main__":
             REQUEST_GPU_HR2.labels(i).set(received_data['gpu'][i]['hashrate2'])
 
         time.sleep(sleep_time)
-#    main()
+
