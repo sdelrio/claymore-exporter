@@ -10,6 +10,7 @@ The script will get values from the IP where Claymore is running and export on p
  claymore [-h] -t <ip> [-f <seconds>] [-p <port>]
 ```
 - `-h` Help
+- `-t` IP address where claymore is running
 - `-f` Seconds to wait on each measure. Default 1 second
 - `-p` port to listen (where prometheus will connect). Default port 8110
 
