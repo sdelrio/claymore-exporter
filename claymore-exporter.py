@@ -8,7 +8,7 @@ import collections
 import json
 import socket
 
-version = 0.42
+version = 0.45
 
 # Check if IP is valid
 def validIP(ip):
@@ -23,13 +23,14 @@ parser = argparse.ArgumentParser(description="Claymore Prometheus exporter v" + 
 parser.add_argument("-t", "--target", metavar="<ip>", required=True, help="Target IP Address", type=validIP)
 parser.add_argument("-f", "--frequency", metavar="<seconds>", required=False, help="Interval in seconds between checking measures", default=1, type=int)
 parser.add_argument("-p", "--port", metavar="<port>", required=False, help="Port for listenin", default=8601, type=int)
+parser.add_argument("-c", "--claymoreport", metavar="<claymoreport>", required=False, help="Port where claymore will be watching", default=3333, type=int)
 args = parser.parse_args()
 
 # Set target IP, port and command to send
 ip = args.target
 listen_port = args.port
 sleep_time = args.frequency
-port = 3333
+port = args.claymoreport
 
 received_data = {'claymore_version': '', 'running_time': '', 'gpu': {} , 'coin1': {}, 'coin2': {}}
 

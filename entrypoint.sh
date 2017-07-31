@@ -13,5 +13,10 @@ if [ -z "$LISTENPORT" ]; then
     LISTENPORT=8601
 fi
 
-python /usr/local/bin/claymore-exporter.py -t $IP -f $FREQUENCY -p $LISTENPORT
+if [ -z "$CLAYMOREPORT" ]; then
+    CLAYMOREPORT=3333
+fi
+
+
+python /usr/local/bin/claymore-exporter.py -t $IP -f $FREQUENCY -p $LISTENPORT -c $CLAYMOREPORT
 
