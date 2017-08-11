@@ -1,4 +1,7 @@
-FROM jfloff/alpine-python:2.7-slim
+ARG BASE_IMAGE=jfloff/alpine-python
+ARG BASE_IMAGE_TAG=2.7-slim
+
+FROM $BASE_IMAGE:$BASE_IMAGE_TAG
 
 WORKDIR /usr/local/bin
 
