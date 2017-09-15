@@ -7,8 +7,10 @@ import time
 import collections
 import json
 import socket
+import select
 
-version = 0.45
+version = 0.49
+timeout = 5
 
 # Check if IP is valid
 def validIP(ip):
@@ -58,9 +60,12 @@ def netcat(hostname, port, content):
         s.connect((hostname, port))
         s.sendall(content)
         s.shutdown(socket.SHUT_WR)
+        s.setblocking(0)
         fulltext = ''
         while 1:
-            data = s.recv(1024)
+            ready = select.select([s], [], [], timeout)
+            if ready[0]:
+                data = s.recv(4096)
             if data == "":
                 break
             fulltext += data
