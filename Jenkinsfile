@@ -14,7 +14,7 @@ node ('docker') {
                 sh "echo X86=${BASE_X86}"
                 sh 'docker version'
                 sh "docker build --no-cache --build-arg BASE_IMAGE=${BASE_X86} -t sdelrio/claymore-exporter:${TAG} ."
-                sh "docker run --rm sdelrio/claymore-exporter:${TAG} uname -a"
+                sh "docker run --entrypoint uname sdelrio/claymore-exporter:${TAG} -m"
             },
             arm: {
                 def TAG="$BUILD_TIMESTAMP-$BUIlD_ID"
@@ -23,7 +23,7 @@ node ('docker') {
                 sh "echo ARM=${BASE_ARM}"
                 sh 'docker version'
                 sh "docker build --no-cache --build-arg BASE_IMAGE=${BASE_ARM} -t sdelrio/rpi-claymore-exporter:${TAG} ."
-                sh "docker run --rm sdelrio/rpi-claymore-exporter:${TAG} uname -a"
+                sh "docker run --entrypoint uname sdelrio/rpi-claymore-exporter:${TAG} -m"
             }
         }
     } finally  {
