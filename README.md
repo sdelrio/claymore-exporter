@@ -19,3 +19,8 @@ Sample:
 ./claymore -t 192.168.1.34 -f 2 -p 8601
 ```
 
+# Grafana sample
+
+You can get later the data exported to prometheus to use into grafana like this:
+
+![](img/grafana-claymore-exporter.png?raw=true "Grafana Screenshot")
