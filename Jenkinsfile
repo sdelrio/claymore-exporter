@@ -26,6 +26,22 @@ node ('docker') {
                 sh "docker run --entrypoint uname sdelrio/rpi-claymore-exporter:${TAG} -m"
             }
         }
+        stage("Push") {
+            withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+                parallel intel: {
+
+                    def TAG="$BUILD_TIMESTAMP-$BUIlD_ID"
+                    sh "docker push sdelrio/claymore-exporter:${TAG}"
+                },
+                arm:  {
+                    def TAG="$BUILD_TIMESTAMP-$BUIlD_ID"
+                    sh "docker push sdelrio/rpi-claymore-exporter:${TAG}"
+                }
+            }
+        }
+
+
     } finally  {
         stage("Cleanup") {
             sh 'docker system prune -af'
