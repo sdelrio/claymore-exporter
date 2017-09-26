@@ -14,6 +14,8 @@ ENV FREQUENCY 1
 ENV VERSION 0.49
 
 ADD claymoreexporter.py .
+ADD claymoreexporter_lib.py .
+ADD test_claymoreexporter_lib.py .
 ADD entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
