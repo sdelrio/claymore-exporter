@@ -19,5 +19,5 @@ fi
 
 # Entrypoint that connects to IP $IP:$CLAYMOREPORT, each $FREQUENCY seconds and listen on port $LISTENPORT
 
-python /usr/local/bin/claymore-exporter.py -t $IP -f $FREQUENCY -p $LISTENPORT -c $CLAYMOREPORT
+python /usr/local/bin/claymoreexporter.py -t $IP -f $FREQUENCY -p $LISTENPORT -c $CLAYMOREPORT
 
