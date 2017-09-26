@@ -1,10 +1,10 @@
 node ('docker') {
     try {
         def TAG="$BUILD_TIMESTAMP-$BUILD_ID"
-
         stage("Checkout") {
             currentBuild.displayName = "$TAG"
             // currentBuild.description = "Description $BUILD_ID"
+            notifyBuild('STARTED')
             sh 'echo Current Build: $BUILD_TIMESTAMP-$BUILD_ID'
             checkout scm
         }
@@ -58,8 +58,40 @@ node ('docker') {
         }
 
     } finally  {
+        // Success or failure, always send notifications
+        notifyBuild(currentBuild.result)
         stage("Cleanup") {
             sh 'docker system prune -af'
         }
     }
+}
+
+def notifyBuild(String buildStatus = 'STARTED') {
+    // build status of null means successful
+    buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+    // Default values
+    def colorName = 'RED'
+    def colorCode = '#FF0000'
+    def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def summary = "${subject} (${env.BUILD_URL})"
+
+    // Override default values based on build status
+    if (buildStatus == 'STARTED') {
+        color = 'yellow'
+        colorcode = '#ffff00'
+
+    } else if (buildStatus == 'SUCCESSFUL') {
+        color = 'GREEN'
+        colorCode = '#00FF00'
+
+    } else {
+        color = 'RED'
+        colorCode = '#FF0000'
+
+    }
+
+    // Send notifications
+    slackSend (color: colorCode, message: summary)
+
 }
