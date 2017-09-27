@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 node ('docker') {
     try {
         env.TAG = "$BUILD_TIMESTAMP-$BUILD_ID"
@@ -49,10 +51,10 @@ node ('docker') {
             )]) {
                 sh "docker login --username $DOCKER_USER --password $DOCKER_PASS"
                 parallel p_intel: {
-                    sh "echo docker push ${IMAGE_X86}:${TAG}"
+                    sh "docker push ${IMAGE_X86}:${TAG}"
                 },
                 p_arm: {
-                    sh "echo docker push ${IMAGE_ARM}:${TAG}"
+                    sh "docker push ${IMAGE_ARM}:${TAG}"
                 }
             }
         }
@@ -60,13 +62,14 @@ node ('docker') {
     } catch (e) {
         // If there was an exception thrown, the build failed
         currentBuild.result = "FAILED"
+        echo 'Err: Build failed with Error: ' + e.toString()
         throw e
     } finally  {
         // Success or failure, always send notifications
         notifyBuild(currentBuild.result)
         stage("Cleanup") {
-            sh 'docker rmi ${IMG_X86}:${TAG}'
-            sh 'docker rmi ${IMG_ARM}:${TAG}'
+            sh 'docker rmi ${IMAGE_X86}:${TAG}'
+            sh 'docker rmi ${IMAGE_ARM}:${TAG}'
         }
     }
 }
