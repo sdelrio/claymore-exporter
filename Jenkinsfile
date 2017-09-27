@@ -19,13 +19,13 @@ node ('docker') {
                 sh "echo X86=${BASE_X86}"
                 sh 'docker version'
                 sh "docker build --build-arg BASE_IMAGE=${BASE_X86} -t ${IMAGE_X86}:${TAG} ."
-                sh "docker run --entrypoint uname ${IMAGE_X86}:${TAG} -m"
+                sh "docker run --rm --entrypoint uname ${IMAGE_X86}:${TAG} -m"
             },
             b_arm: {
                 sh "echo ARM=${BASE_ARM}"
                 sh 'docker version'
                 sh "docker build --build-arg BASE_IMAGE=${BASE_ARM} -t ${IMAGE_ARM}:${TAG} ."
-                sh "docker run --entrypoint uname ${IMAGE_ARM}:${TAG} -m"
+                sh "docker run --rm --entrypoint uname ${IMAGE_ARM}:${TAG} -m"
             }
         }
 
