@@ -52,16 +52,16 @@ node ('docker') {
             )]) {
                 sh "docker login --username $DOCKER_USER --password $DOCKER_PASS"
                 parallel p_intel: {
-                    sh "docker tag ${IMAGE_X86} ${IMAGE_X86}:${TAG}"
                     sh "docker push ${IMAGE_X86}:${TAG}"
+                    sh "docker tag  ${IMAGE_X86}:${TAG} ${IMAGE_X86}"
                     sh "docker push ${IMAGE_X86}"
-                    sh "docker rmi ${IMAGE_X86}"
+                    sh "docker rmi  ${IMAGE_X86}"
                 },
                 p_arm: {
-                    sh "docker tag ${IMAGE_ARM} ${IMAGE_ARM}:${TAG}"
                     sh "docker push ${IMAGE_ARM}:${TAG}"
+                    sh "docker tag  ${IMAGE_ARM}:${TAG} ${IMAGE_ARM}"
                     sh "docker push ${IMAGE_ARM}"
-                    sh "docker rmi ${IMAGE_ARM}"
+                    sh "docker rmi  ${IMAGE_ARM}"
                 }
             }
         }
