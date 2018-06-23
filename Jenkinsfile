@@ -52,10 +52,16 @@ node ('docker') {
             )]) {
                 sh "docker login --username $DOCKER_USER --password $DOCKER_PASS"
                 parallel p_intel: {
-                    sh "echo docker push ${IMAGE_X86}:${TAG}"
+                    sh "docker tag ${IMAGE_X86} ${IMAGE_X86}:${TAG}"
+                    sh "docker push ${IMAGE_X86}:${TAG}"
+                    sh "docker push ${IMAGE_X86}"
+                    sh "docker rmi ${IMAGE_X86}"
                 },
                 p_arm: {
-                    sh "echo docker push ${IMAGE_ARM}:${TAG}"
+                    sh "docker tag ${IMAGE_ARM} ${IMAGE_ARM}:${TAG}"
+                    sh "docker push ${IMAGE_ARM}:${TAG}"
+                    sh "docker push ${IMAGE_ARM}"
+                    sh "docker rmi ${IMAGE_ARM}"
                 }
             }
         }
@@ -69,8 +75,8 @@ node ('docker') {
         // Success or failure, always send notifications
         notifyBuild(currentBuild.result)
         stage("Cleanup") {
-            sh 'echo docker rmi ${IMAGE_X86}:${TAG}'
-            sh 'echo docker rmi ${IMAGE_ARM}:${TAG}'
+            sh 'docker rmi ${IMAGE_X86}:${TAG}'
+            sh 'docker rmi ${IMAGE_ARM}:${TAG}'
         }
     }
 }
