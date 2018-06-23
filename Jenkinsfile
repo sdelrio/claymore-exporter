@@ -46,15 +46,16 @@ node ('docker') {
         }
 
         stage("Push") {
+          if (gitRepo())
             withCredentials([usernamePassword(
             credentialsId: 'docker-hub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER'
             )]) {
                 sh "docker login --username $DOCKER_USER --password $DOCKER_PASS"
                 parallel p_intel: {
-                    sh "docker push ${IMAGE_X86}:${TAG}"
+                    sh "echo docker push ${IMAGE_X86}:${TAG}"
                 },
                 p_arm: {
-                    sh "docker push ${IMAGE_ARM}:${TAG}"
+                    sh "echo docker push ${IMAGE_ARM}:${TAG}"
                 }
             }
         }
@@ -68,8 +69,8 @@ node ('docker') {
         // Success or failure, always send notifications
         notifyBuild(currentBuild.result)
         stage("Cleanup") {
-            sh 'docker rmi ${IMAGE_X86}:${TAG}'
-            sh 'docker rmi ${IMAGE_ARM}:${TAG}'
+            sh 'echo docker rmi ${IMAGE_X86}:${TAG}'
+            sh 'echo docker rmi ${IMAGE_ARM}:${TAG}'
         }
     }
 }
@@ -86,15 +87,15 @@ def notifyBuild(String buildStatus = 'STARTED') {
 
     // Override default values based on build status
     if (buildStatus == 'STARTED') {
-        color = 'yellow'
-        colorcode = '#ffff00'
+        colorName = 'yellow'
+        colorCode = '#ffff00'
 
     } else if (buildStatus == 'SUCCESSFUL') {
-        color = 'GREEN'
+        colorName = 'GREEN'
         colorCode = '#00FF00'
 
     } else {
-        color = 'RED'
+        colorName = 'RED'
         colorCode = '#FF0000'
 
     }
@@ -102,4 +103,18 @@ def notifyBuild(String buildStatus = 'STARTED') {
     // Send notifications
     slackSend (color: colorCode, message: subject)
 
+}
+
+def gitRepo() {
+    timeout(time: 60, unit: 'SECONDS') {
+        if (fileExists('.git')) {
+            echo 'Found Git repository: remote deployment.'
+            return true
+        }
+        else
+        {
+            echo 'No Git repository found: local run'
+            return false
+        }
+    }
 }

@@ -26,6 +26,7 @@ def netcat(hostname, port, content):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
+        s.settimeout(tiemout)
         s.connect((hostname, port))
         s.sendall(content)
         s.shutdown(socket.SHUT_WR)

@@ -5,7 +5,7 @@ import argparse
 import time
 from claymoreexporter_lib import netcat, validIP
 
-version = 0.49
+version = 0.50
 
 # Parse commandline arguments
 parser = argparse.ArgumentParser(description="Claymore Prometheus exporter v" + str(version))
@@ -39,13 +39,30 @@ if __name__ == "__main__":
 
     # Main loop
     while True:
-        data = netcat(ip, port, '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}' )
+        try:
+            data = netcat(ip, port, '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}' )
+        except:
+            received_data = {'claymore_version': '', 'running_time': '', 'gpu': {} , 'coin1': {}, 'coin2': {}}
+            print "exception data"
+
+        print "receiveived_data: ", received_data
+        # Get Claymore version and running time from raw data
         received_data['claymore_version'] = data['result'][0]
         received_data['running_time'] = data['result'][1]
 
+        if (received_data['claymore_version'] == "No client"):
+            for i in range (0,len(received_data['gpu'])):
+                received_data['gpu'][i]['hashrate1'] = 0
+                received_data['gpu'][i]['hashrate2'] = 0
+                received_data['gpu'][i]['temp'] = 0
+                received_data['gpu'][i]['fan']  = 0
+            break;
+
+        # Get total hash rate from Claymore raw data
         total_coin_array = data['result'][2].split(';')
         received_data['coin1']['total_hashrate'] = total_coin_array[0]
 
+        # Get Shares accepted/rejeted from raw data, and update last share/reject info
         if 'shares' in received_data['coin1']:
             last_share1  = int(received_data['coin1']['shares'])
         else:
@@ -88,6 +105,7 @@ if __name__ == "__main__":
         if ( int(received_data['coin2']['reject']) > last_reject2 ):
             REQUEST_COIN2_REJECT.inc( int(received_data['coin2']['reject']) - last_reject2 )
 
+        # Get Hashrates from claymore raw data
         id = 0
         for i in data['result'][3].split(';'):
             received_data['gpu'][id] = {}
@@ -105,6 +123,7 @@ if __name__ == "__main__":
                 received_data['gpu'][id]['hashrate2'] = i
             id+=1
 
+        # Get Temperature/Fan from claymore raw data
         tf = data['result'][6].split(';')
 
         for i in range (0,len(received_data['gpu'])):
