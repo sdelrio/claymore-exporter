@@ -39,24 +39,34 @@ if __name__ == "__main__":
 
     # Main loop
     while True:
-        try:
-            data = netcat(ip, port, '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}' )
-        except:
-            received_data = {'claymore_version': '', 'running_time': '', 'gpu': {} , 'coin1': {}, 'coin2': {}}
-            print "exception data"
 
-        print "receiveived_data: ", received_data
+        data = netcat(ip, port, '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}' )
+
         # Get Claymore version and running time from raw data
         received_data['claymore_version'] = data['result'][0]
         received_data['running_time'] = data['result'][1]
 
+        # sample received_data received_data:
+        #
+        # {'claymore_version': u'11.3 - ETH',
+        #    'coin2': {'total_hashrate': u'0', 'shares': u'0', 'reject': u'0'},
+        #    'coin1': {'total_hashrate': u'116245', 'shares': u'462', 'reject': u'0'},
+        #      'gpu': {0: {'hashrate2': 0, 'hashrate1': u'29161', 'fan': u'40', 'temp': u'64'},
+        #              1: {'hashrate2': 0, 'hashrate1': u'29171', 'fan': u'40', 'temp': u'67'},
+        #              2: {'hashrate2': 0, 'hashrate1': u'27806', 'fan': u'43', 'temp': u'65'},
+        #              3: {'hashrate2': 0, 'hashrate1': u'30105', 'fan': u'37', 'temp': u'73'}},
+        # 'running_time': u'679'}
+
         if (received_data['claymore_version'] == "No client"):
+
+            # No data array:
+            # received_data {'claymore_version': u'No client', 'coin2': {}, 'coin1': {}, 'gpu': {}, 'running_time': u'6'}
+
             for i in range (0,len(received_data['gpu'])):
                 received_data['gpu'][i]['hashrate1'] = 0
                 received_data['gpu'][i]['hashrate2'] = 0
                 received_data['gpu'][i]['temp'] = 0
                 received_data['gpu'][i]['fan']  = 0
-            break;
 
         # Get total hash rate from Claymore raw data
         total_coin_array = data['result'][2].split(';')

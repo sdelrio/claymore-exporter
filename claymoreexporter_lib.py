@@ -20,13 +20,14 @@ def validIP(ip):
 #
 # Return Value:
 # {"id": 0, "error": null, "result": ["9.3 - ETH", "25", "32490;6;0", "26799;5690", "649800;9;0", "535999;113801", "", "eth-eu1.nanopool.org:9999;sia-eu1.nanopool.org:7777", "0;0;0;0"]}
+# {u'result': [u'11.3 - ETH', u'676', u'116239;459;0', u'29161;29163;27806;30108', u'0;0;0', u'off;off;off;off', u'64;40;67;40;65;43;73;33', u'eu1.nanopool.org:9999', u'0;0;0;0'], u'id': 0, u'error': None}
 
 def netcat(hostname, port, content):
     """ Netcat equivalent to get data from Claymore. Normal http get doesn't works."""
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        s.settimeout(tiemout)
+        s.settimeout(timeout)
         s.connect((hostname, port))
         s.sendall(content)
         s.shutdown(socket.SHUT_WR)
